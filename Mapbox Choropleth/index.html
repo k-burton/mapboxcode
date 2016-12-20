@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Choropleth Part 2</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="styleb.css">
+  </head>
+
+  <body>
+    <div id="map" class="mapboxgl-map">
+      <div class="mapboxgl-canvas-container mapboxgl-interactive">
+        <canvas class="mapboxgl-canvas" tabindex="0" width="1863" height="1309" style="position: absolute; width: 1355px; height 952px; cursor: default;">
+      </div>
+      <div class="mapboxgl-control-container">
+        <div class-"mapboxgl-ctrl-top-left"></div>
+        <div class="mapboxgl-ctrl-top-right"></div>
+        <div class="mapboxgl-ctrl-bottom-left"></div>
+        <div class="mapboxgl-ctrl-bottom-right">
+          <div class="mapboxgl-ctrl-attrib mapboxgl-ctrl">...</div>
+        </div>
+      </div>
+    </div>
+    <div class='map-overlay' id='features'>
+      <h2>US population density</h2>
+      <div id='pd'><p>Hover over a state!</p></div>
+    </div>
+<!-- LEGEND -->
+    <div class='map-overlay' id='legend'>
+<!-- 0-10 -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(255, 237, 160);"></span>
+        <span>0-10</span>
+      </div>
+<!-- 10-20 -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(254, 217, 118);"></span>
+        <span>10-20</span>
+      </div>
+<!-- 20-50 -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(254, 178, 76);"></span>
+        <span>20-50</span>
+      </div>
+<!-- 50-100 -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(253, 141, 60);"></span>
+        <span>50-100</span>
+      </div>
+<!-- 100-200 -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(252, 78, 42);"></span>
+        <span>100-200</span>
+      </div>
+<!-- 200-500 -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(227, 26, 28);"></span>
+        <span>200-500</span>
+      </div>
+<!-- 500-1000 -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(189, 0, 38);"></span>
+        <span>500-1000</span>
+      </div>
+<!-- 1000+ -->
+      <div>
+        <span class="legend-key" style="background-color: rgb(128, 0, 38);"></span>
+        <span>1000+</span>
+      </div>
+    </div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmpqazdlMDBsdnRva284cWd3bm11byJ9.V6Hg2oYJwMAxeoR9GEzkAA';
+    var map = new mapboxgl.Map({
+      container: 'map' ,
+      style: 'mapbox://styles/examples/cinm8cuw30024adnctbjra0zy'
+      })
+    map.on('load', function(){
+      var layers = ['0-10', '10-20', '20-50', '50-100', '100-200', '200-500', '500-1000', '1000+'];
+
+      layers.forEach(function(layer) {
+      var color = map.getPaintProperty(layer, 'fill-color');
+      var item = document.createElement('div');
+      var key = document.createElement('span');
+      key.className = 'legend-key';
+      key.style.backgroundColor = color;
+
+      var value = document.createElement('span');
+      value.innerHTML = layer;
+      item.appendChild(key);
+      item.appendChild(value);
+      legend.appendChild(item);
+      });
+
+
+      map.on('mousemove', function(e) {
+        var states = map.queryRenderedFeatures(e.point, {
+          layers: layers
+        });
+
+        if (states.length > 0) {
+          document.getElementById('pd').innerHTML = '<h3><strong>' + states[0].properties.name + '</strong></h3><p><strong><em>' + states[0].properties.density + '</strong> people per square mile</em></p>';
+        } else {
+          document.getElementById('pd').innerHTML = '<p>Hover over a state!</p>';
+        }
+      });
+    });
+    map.getCanvas().style.cursor = 'default';
+    map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
+
+    // map.on('mousemove', function(e) {
+    //   var states = map.queryRenderedFeatures(e.point, {
+    //     layers: layers
+    //   });
+    //
+    //   if (states.length > 0) {
+    //     document.getElementById('pd').innerHTML = '<h3><strong>' + states[0].properties.name + '</strong></h3><p><strong><em>' + states[0].properties.density + '</strong> people per square mile</em></p>';
+    //   } else {
+    //     document.getElementById('pd').innerHTML = '<p>Hover over a state!</p>';
+    //   }
+    // });
+
+// var map = new mapboxgl.Map({
+//     container: 'map',
+//     style: 'mapbox://styles/kburton/ciuoilfm200a62jqnhbp1qj3a'
+  </script>
+
+</body>
+
+</html>
